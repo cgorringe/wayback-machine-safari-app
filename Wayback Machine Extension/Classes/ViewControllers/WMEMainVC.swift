@@ -15,11 +15,12 @@ class WMEMainVC: WMEBaseVC {
     }()
 
     @IBOutlet weak var txtSearch: NSSearchField!
+    @IBOutlet weak var boxWayback: NSBox!
+    @IBOutlet weak var txtSavedInfo: NSTextField!
+    @IBOutlet weak var indProgress: NSProgressIndicator!
     @IBOutlet weak var btnSavePage: NSButton!
     @IBOutlet weak var btnSiteMap: NSButton!
     @IBOutlet weak var btnLoginout: NSButton!
-    @IBOutlet weak var boxWayback: NSBox!
-    @IBOutlet weak var indProgress: NSProgressIndicator!
 
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - View Lifecycle
@@ -29,6 +30,7 @@ class WMEMainVC: WMEBaseVC {
         txtSearch.delegate = self
         indProgress.stopAnimation(nil)
     }
+
     override func viewWillAppear() {
         super.viewWillAppear()
         loadSearchField()
@@ -43,6 +45,11 @@ class WMEMainVC: WMEBaseVC {
             updateLoginUI(false)
         }
         enableSiteMapUI(WMEGlobal.shared.siteMapEnabled)
+
+        // update saved info
+        txtSavedInfo.stringValue = ""
+        updateSavedInfo(count: WMEGlobal.shared.urlLastCount)
+        //grabURL { (url) in self.updateSavedInfo(url: url) }  // use when pressing Enter in search box
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -120,6 +127,22 @@ class WMEMainVC: WMEBaseVC {
                 completion(url)
             }
         }
+    }
+
+    func updateSavedInfo(count: Int?) {
+        if let count = count {
+            self.txtSavedInfo.stringValue = (count > 0) ? "Saved \(count.withCommas()) times." : "This page was never archived."
+        } else {
+            self.txtSavedInfo.stringValue = ""
+        }
+    }
+
+    func updateSavedInfo(url: String?) {
+        guard let url = url else {
+            self.txtSavedInfo.stringValue = ""
+            return
+        }
+        self.updateSavedInfo(count: WMEGlobal.shared.urlCountCache[url])
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,7 @@ import Alamofire
 class WMSAPIManager {
     static let shared = WMSAPIManager()
 
+    // options
     public enum CaptureOption {
         case allErrors, outlinks, screenshot, availability
     }
@@ -31,6 +32,7 @@ class WMSAPIManager {
     static let WM_OLDEST           = "/web/0/"
     static let WM_NEWEST           = "/web/2/"
     static let WM_OVERVIEW         = "/web/*/"
+    static let WM_SPARKLINE        = "/__wb/sparkline"
 
     static var WEB_BASE_URL        = "https://archive.org"
     static let WEB_AVAILABILITY    = "/wayback/available"
@@ -253,7 +255,7 @@ class WMSAPIManager {
 
     // WAS: func getWaybackUrlFromResponse(response: [String: Any]) -> String?
     /// Grabs the wayback URL string out of the JSON response object from checkAvailability().
-    /// - parameter response: from JSONSerialization.jsonObject()
+    /// - parameter json: from JSONSerialization.jsonObject()
     /// - returns: Wayback URL as String, or nil if not available, invalid, or status != 200.
     ///
     /// # API response JSON format: #
@@ -262,9 +264,9 @@ class WMSAPIManager {
     ///   "closest": { "available": true, "status": "200", "url": "http:..." }
     /// } } ]
     /// ```
-    func extractWaybackURL(from response: [String: Any]?) -> String? {
+    func extractWaybackURL(from json: [String: Any]?) -> String? {
 
-        if let results = response?["results"] as? [[String: Any]],
+        if let results = json?["results"] as? [[String: Any]],
             let archived_snapshots = results.first?["archived_snapshots"] as? [String: Any],
             let closest = archived_snapshots["closest"] as? [String: Any],
             let available = closest["available"] as? Bool,
@@ -277,6 +279,47 @@ class WMSAPIManager {
             return url
         }
        return nil
+    }
+
+    /// Retrieves total count of snapshots stored in the Wayback Machine for given `url`.
+    /// - parameter url: The URL to check.
+    ///
+    func getWaybackCount(url: String, completion: @escaping (_ count: Int?, _ originalURL: String) -> Void) {
+        if (DEBUG_LOG) { NSLog("*** getWaybackCount() url: \(url)") }
+
+        // prepare request
+        var headers = WMSAPIManager.HEADERS
+        headers["Accept"] = "application/json"
+        var params = Parameters()
+        params["url"] = url
+        params["collection"] = "web"
+        params["output"] = "json"
+
+        // make request
+        // http://web.archive.org/__wb/sparkline?url=URL&collection=web&output=json
+        Alamofire.request(WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_SPARKLINE,
+                          method: .get, parameters: params, headers: headers)
+        .responseJSON { (response) in
+            switch response.result {
+            case .success:
+                if let json = response.result.value as? [String: Any],
+                    let years = json["years"] as? [String: [Int]]
+                {
+                    var totalCount = 0
+                    for year in years {
+                        for monthCount in year.value {
+                            totalCount += monthCount
+                        }
+                    }
+                    completion(totalCount, url)
+                } else {
+                    completion(0, url)
+                }
+            case .failure(let error):
+                NSLog("*** ERROR: %@", error.localizedDescription)
+                completion(nil, url)
+            }
+        }
     }
 
     /// Retrieves data for the Site Map graph.

@@ -9,10 +9,13 @@ import Foundation
 import SafariServices
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
-    
+
+    var waybackCountPending: Bool = false
+
+    // This method will be called when a content script provided by your extension calls safari.extension.dispatchMessage("message").
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String : Any]?) {
         if (DEBUG_LOG) { NSLog("*** messageReceived(): %@", messageName) }
-        // This method will be called when a content script provided by your extension calls safari.extension.dispatchMessage("message").
+
         page.getPropertiesWithCompletionHandler { properties in
             if (DEBUG_LOG) { NSLog("*** The extension received a message (\(messageName)) from a script injected into (\(String(describing: properties?.url))) with userInfo (\(userInfo ?? [:]))") }
 
@@ -37,14 +40,64 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
     }
     
+    // This method will be called when your toolbar item is clicked.
     override func toolbarItemClicked(in window: SFSafariWindow) {
-        // This method will be called when your toolbar item is clicked.
         if (DEBUG_LOG) { NSLog("*** The extension's toolbar item was clicked") }
     }
-    
+
+    // This is called when Safari's state changed in some way that would require the extension's toolbar item to be validated again.
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping ((Bool, String) -> Void)) {
-        // This is called when Safari's state changed in some way that would require the extension's toolbar item to be validated again.
-        validationHandler(true, "")
+        if (DEBUG_LOG) { NSLog("*** validateToolbarItem()") }
+
+        if WMEGlobal.shared.urlCountEnabled {
+            showWaybackCount(in: window, validationHandler: validationHandler)
+        } else {
+            validationHandler(true, "")
+        }
+    }
+
+    func showWaybackCount(in window: SFSafariWindow, validationHandler: @escaping ((Bool, String) -> Void)) {
+        if (DEBUG_LOG) { NSLog("*** showWaybackCount()") }
+
+        window.getActiveTab() { (activeTab) in
+            activeTab?.getActivePage() { (activePage) in
+                activePage?.getPropertiesWithCompletionHandler() { (properties) in
+                    if let url = properties?.url?.absoluteString {
+                        if let count = WMEGlobal.shared.urlCountCache[url] {
+                            WMEGlobal.shared.urlLastCount = count
+                            self.waybackCountPending = false
+                            if count > 0 {
+                                validationHandler(true, (count > 9999) ? "∞" : count.withCommas())
+                            } else {
+                                validationHandler(true, "")
+                            }
+                        }
+                        else if self.waybackCountPending == false {
+                            self.waybackCountPending = true
+                            WMSAPIManager.shared.getWaybackCount(url: url) { (count, originalURL) in
+                                self.waybackCountPending = false
+                                if (DEBUG_LOG) { NSLog("*** showWaybackCount() completion count: \(String(describing: count)), url: \(originalURL)") }
+                                if let count = count {
+                                    WMEGlobal.shared.urlLastCount = count
+                                    WMEGlobal.shared.urlCountCache[originalURL] = count
+                                    if count > 0 {
+                                        validationHandler(true, (count > 9999) ? "∞" : count.withCommas())
+                                    } else {
+                                        validationHandler(true, "")
+                                    }
+                                } else {
+                                    WMEGlobal.shared.urlLastCount = nil
+                                    validationHandler(true, "")
+                                }
+                            }
+                        }
+                    } else {
+                        WMEGlobal.shared.urlLastCount = nil
+                        validationHandler(true, "")
+                    }
+                }
+            }
+        }
     }
     
     override func popoverViewController() -> SFSafariExtensionViewController {

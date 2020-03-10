@@ -48,10 +48,6 @@
 		<array>
 			<dict>
 				<key>Style Sheet</key>
-				<string>googlestyle.css</string>
-			</dict>
-			<dict>
-				<key>Style Sheet</key>
 				<string>RTContent.css</string>
 			</dict>
 			<dict>

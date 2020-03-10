@@ -12,7 +12,10 @@ class WMEGlobal: NSObject {
 
     var savePageEnabled = true
     var siteMapEnabled = true
-    
+    var urlCountEnabled = true
+    var urlCountCache = [String: Int]()  // TODO: should limit size of cache
+    var urlLastCount: Int?
+
     func saveUserData(userData: [String: Any?]) {
         let encodedObject = NSKeyedArchiver.archivedData(withRootObject: userData)
         UserDefaults.standard.set(encodedObject, forKey: "UserData")
