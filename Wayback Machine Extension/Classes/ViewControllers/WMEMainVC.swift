@@ -7,6 +7,7 @@
 
 import Foundation
 import Cocoa
+import SafariServices
 
 class WMEMainVC: WMEBaseVC {
 
@@ -17,6 +18,7 @@ class WMEMainVC: WMEBaseVC {
     @IBOutlet weak var txtSearch: NSSearchField!
     @IBOutlet weak var boxWayback: NSBox!
     @IBOutlet weak var txtSavedInfo: NSTextField!
+    @IBOutlet weak var txtLastSaved: NSTextField!
     @IBOutlet weak var indProgress: NSProgressIndicator!
     @IBOutlet weak var btnSavePage: NSButton!
     @IBOutlet weak var btnSiteMap: NSButton!
@@ -131,7 +133,13 @@ class WMEMainVC: WMEBaseVC {
 
     func updateSavedInfo(count: Int?) {
         if let count = count {
-            self.txtSavedInfo.stringValue = (count > 0) ? "Saved \(count.withCommas()) times." : "This page was never archived."
+            if count == 1 {
+                self.txtSavedInfo.stringValue = "Saved once."
+            } else if count > 1 {
+                self.txtSavedInfo.stringValue = "Saved \(count.withCommas()) times."
+            } else {
+                self.txtSavedInfo.stringValue = "This page was never archived."
+            }
         } else {
             self.txtSavedInfo.stringValue = ""
         }
@@ -186,6 +194,11 @@ class WMEMainVC: WMEBaseVC {
                             if (DEBUG_LOG) { NSLog("*** capturePage completed: archiveURL: \(String(describing: archiveURL)) errMsg: \(String(describing: errMsg))") }
                             self.enableSavePageUI(true)
                             if archiveURL != nil {
+                                // increment counter, since there is a delay when calling API in receiving updated count
+                                if let count = WMEGlobal.shared.urlCountCache[url] {
+                                    WMEGlobal.shared.urlCountCache[url] = count + 1
+                                    SFSafariApplication.setToolbarItemsNeedUpdate()
+                                }
                                 /*
                                  FIXME: NSAlert fails to show if MainVC not visible.
                                  I haven't been able to solve this issue.
