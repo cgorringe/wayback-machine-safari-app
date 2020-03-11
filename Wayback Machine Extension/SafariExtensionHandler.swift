@@ -63,36 +63,39 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             activeTab?.getActivePage() { (activePage) in
                 activePage?.getPropertiesWithCompletionHandler() { (properties) in
                     if let url = properties?.url?.absoluteString {
-                        if let count = WMEGlobal.shared.urlCountCache[url] {
-                            WMEGlobal.shared.urlLastCount = count
+                        if let wbc = WMEGlobal.shared.urlCountCache[url] {
+                            // url in cache
+                            WMEGlobal.shared.urlCountLastURL = url
                             self.waybackCountPending = false
-                            if count > 0 {
-                                validationHandler(true, (count > 9999) ? "∞" : count.withCommas())
+                            if wbc.count > 0 {
+                                validationHandler(true, (wbc.count > 9999) ? "∞" : wbc.count.withCommas())
                             } else {
                                 validationHandler(true, "")
                             }
                         }
                         else if self.waybackCountPending == false {
+                            // url not in cache, so call api
                             self.waybackCountPending = true
-                            WMSAPIManager.shared.getWaybackCount(url: url) { (count, originalURL) in
+                            WMSAPIManager.shared.getWaybackCount(url: url) { (originalURL, count, firstDate, lastDate) in
                                 self.waybackCountPending = false
                                 if (DEBUG_LOG) { NSLog("*** showWaybackCount() completion count: \(String(describing: count)), url: \(originalURL)") }
                                 if let count = count {
-                                    WMEGlobal.shared.urlLastCount = count
-                                    WMEGlobal.shared.urlCountCache[originalURL] = count
+                                    let wbc = WMWaybackCount(count: count, firstDate: firstDate, lastDate: lastDate)
+                                    WMEGlobal.shared.urlCountLastURL = originalURL
+                                    WMEGlobal.shared.urlCountCache[originalURL] = wbc
                                     if count > 0 {
                                         validationHandler(true, (count > 9999) ? "∞" : count.withCommas())
                                     } else {
                                         validationHandler(true, "")
                                     }
                                 } else {
-                                    WMEGlobal.shared.urlLastCount = nil
+                                    WMEGlobal.shared.urlCountLastURL = nil
                                     validationHandler(true, "")
                                 }
                             }
                         }
                     } else {
-                        WMEGlobal.shared.urlLastCount = nil
+                        WMEGlobal.shared.urlCountLastURL = nil
                         validationHandler(true, "")
                     }
                 }
@@ -101,7 +104,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     }
     
     override func popoverViewController() -> SFSafariExtensionViewController {
-        //let vc = WMEGlobal.shared.isLoggedIn() ? WMEMainVC() : WMELoginVC()
         let vc = WMEMainVC()
         return vc
     }

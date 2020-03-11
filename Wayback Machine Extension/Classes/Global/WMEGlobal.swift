@@ -7,14 +7,20 @@
 
 import Foundation
 
+struct WMWaybackCount {
+    var count: Int = 0
+    var firstDate: Date?
+    var lastDate: Date?
+}
+
 class WMEGlobal: NSObject {
     static let shared = WMEGlobal()
 
     var savePageEnabled = true
     var siteMapEnabled = true
     var urlCountEnabled = true
-    var urlCountCache = [String: Int]()  // TODO: should limit size of cache
-    var urlLastCount: Int?
+    var urlCountCache = [String: WMWaybackCount]()  // TODO: limit size of cache?
+    var urlCountLastURL: String?
 
     func saveUserData(userData: [String: Any?]) {
         let encodedObject = NSKeyedArchiver.archivedData(withRootObject: userData)

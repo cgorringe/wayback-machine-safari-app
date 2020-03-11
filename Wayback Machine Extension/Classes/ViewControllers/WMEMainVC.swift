@@ -50,7 +50,7 @@ class WMEMainVC: WMEBaseVC {
 
         // update saved info
         txtSavedInfo.stringValue = ""
-        updateSavedInfo(count: WMEGlobal.shared.urlLastCount)
+        updateSavedInfo(url: WMEGlobal.shared.urlCountLastURL)
         //grabURL { (url) in self.updateSavedInfo(url: url) }  // use when pressing Enter in search box
     }
 
@@ -131,7 +131,41 @@ class WMEMainVC: WMEBaseVC {
         }
     }
 
+    func updateSavedInfo(wbc: WMWaybackCount?) {
+        if let wbc = wbc {
+            if wbc.count == 1 {
+                self.txtSavedInfo.stringValue = "Saved once."
+            } else if wbc.count > 1 {
+                self.txtSavedInfo.stringValue = "Saved \(wbc.count.withCommas()) times."
+            } else {
+                self.txtSavedInfo.stringValue = "This page was never archived."
+            }
+            if let recent = wbc.lastDate {
+                let df = DateFormatter()
+                df.dateStyle = .medium
+                df.timeStyle = .short
+                self.txtLastSaved.stringValue = "Last Saved on " + df.string(from: recent)
+            } else {
+                self.txtLastSaved.stringValue = ""
+            }
+        } else {
+            self.txtSavedInfo.stringValue = ""
+            self.txtLastSaved.stringValue = ""
+        }
+    }
+
+    func updateSavedInfo(url: String?) {
+        guard let url = url else {
+            self.txtSavedInfo.stringValue = ""
+            self.txtLastSaved.stringValue = ""
+            return
+        }
+        self.updateSavedInfo(wbc: WMEGlobal.shared.urlCountCache[url])
+    }
+
+/*
     func updateSavedInfo(count: Int?) {
+
         if let count = count {
             if count == 1 {
                 self.txtSavedInfo.stringValue = "Saved once."
@@ -144,14 +178,7 @@ class WMEMainVC: WMEBaseVC {
             self.txtSavedInfo.stringValue = ""
         }
     }
-
-    func updateSavedInfo(url: String?) {
-        guard let url = url else {
-            self.txtSavedInfo.stringValue = ""
-            return
-        }
-        self.updateSavedInfo(count: WMEGlobal.shared.urlCountCache[url])
-    }
+*/
 
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Actions
@@ -195,8 +222,9 @@ class WMEMainVC: WMEBaseVC {
                             self.enableSavePageUI(true)
                             if archiveURL != nil {
                                 // increment counter, since there is a delay when calling API in receiving updated count
-                                if let count = WMEGlobal.shared.urlCountCache[url] {
-                                    WMEGlobal.shared.urlCountCache[url] = count + 1
+                                if WMEGlobal.shared.urlCountCache[url] != nil {
+                                    WMEGlobal.shared.urlCountCache[url]?.count += 1
+                                    WMEGlobal.shared.urlCountCache[url]?.lastDate = Date()
                                     SFSafariApplication.setToolbarItemsNeedUpdate()
                                 }
                                 /*

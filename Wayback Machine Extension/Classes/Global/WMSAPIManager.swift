@@ -284,7 +284,8 @@ class WMSAPIManager {
     /// Retrieves total count of snapshots stored in the Wayback Machine for given `url`.
     /// - parameter url: The URL to check.
     ///
-    func getWaybackCount(url: String, completion: @escaping (_ count: Int?, _ originalURL: String) -> Void) {
+    func getWaybackCount(url: String, completion: @escaping (_ originalURL: String, _ count: Int?,
+                                                             _ firstDate: Date?, _ lastDate: Date?) -> Void) {
         if (DEBUG_LOG) { NSLog("*** getWaybackCount() url: \(url)") }
 
         // prepare request
@@ -305,19 +306,34 @@ class WMSAPIManager {
                 if let json = response.result.value as? [String: Any],
                     let years = json["years"] as? [String: [Int]]
                 {
+                    // get total count
                     var totalCount = 0
                     for year in years {
                         for monthCount in year.value {
                             totalCount += monthCount
                         }
                     }
-                    completion(totalCount, url)
+                    // get timestamps
+                    var firstDate: Date? = nil, lastDate: Date? = nil
+                    if totalCount > 0 {
+                        let df = DateFormatter()
+                        df.locale = Locale(identifier: "en_US_POSIX")
+                        df.dateFormat = "yyyyMMddHHmmss"
+                        df.timeZone = TimeZone(secondsFromGMT: 0)
+                        if let firstStr = json["first_ts"] as? String {
+                            firstDate = df.date(from: firstStr)
+                        }
+                        if let lastStr = json["last_ts"] as? String {
+                            lastDate = df.date(from: lastStr)
+                        }
+                    }
+                    completion(url, totalCount, firstDate, lastDate)
                 } else {
-                    completion(0, url)
+                    completion(url, 0, nil, nil)
                 }
             case .failure(let error):
                 NSLog("*** ERROR: %@", error.localizedDescription)
-                completion(nil, url)
+                completion(url, nil, nil, nil)
             }
         }
     }
