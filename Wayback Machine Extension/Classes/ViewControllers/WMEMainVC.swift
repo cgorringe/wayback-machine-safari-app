@@ -163,23 +163,6 @@ class WMEMainVC: WMEBaseVC {
         self.updateSavedInfo(wbc: WMEGlobal.shared.urlCountCache[url])
     }
 
-/*
-    func updateSavedInfo(count: Int?) {
-
-        if let count = count {
-            if count == 1 {
-                self.txtSavedInfo.stringValue = "Saved once."
-            } else if count > 1 {
-                self.txtSavedInfo.stringValue = "Saved \(count.withCommas()) times."
-            } else {
-                self.txtSavedInfo.stringValue = "This page was never archived."
-            }
-        } else {
-            self.txtSavedInfo.stringValue = ""
-        }
-    }
-*/
-
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Actions
 

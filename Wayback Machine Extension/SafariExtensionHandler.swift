@@ -56,6 +56,21 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
     }
 
+    func badgeText(for count: Int) -> String {
+        var text = ""
+        switch count {
+        case 1..<10_000:
+            text = count.withCommas()
+        case 10_000..<1_000_000:
+            text = String(Int(count / 1000)) + "K"
+        case 1_000_000...:
+            text = String(Double(Int(count / 100_000)) / 10.0) + "M"
+        default:
+            text = ""
+        }
+        return text
+    }
+
     func showWaybackCount(in window: SFSafariWindow, validationHandler: @escaping ((Bool, String) -> Void)) {
         if (DEBUG_LOG) { NSLog("*** showWaybackCount()") }
 
@@ -67,11 +82,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                             // url in cache
                             WMEGlobal.shared.urlCountLastURL = url
                             self.waybackCountPending = false
-                            if wbc.count > 0 {
-                                validationHandler(true, (wbc.count > 9999) ? "∞" : wbc.count.withCommas())
-                            } else {
-                                validationHandler(true, "")
-                            }
+                            validationHandler(true, self.badgeText(for: wbc.count))
                         }
                         else if self.waybackCountPending == false {
                             // url not in cache, so call api
@@ -83,11 +94,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                                     let wbc = WMWaybackCount(count: count, firstDate: firstDate, lastDate: lastDate)
                                     WMEGlobal.shared.urlCountLastURL = originalURL
                                     WMEGlobal.shared.urlCountCache[originalURL] = wbc
-                                    if count > 0 {
-                                        validationHandler(true, (count > 9999) ? "∞" : count.withCommas())
-                                    } else {
-                                        validationHandler(true, "")
-                                    }
+                                    validationHandler(true, self.badgeText(for: count))
                                 } else {
                                     WMEGlobal.shared.urlCountLastURL = nil
                                     validationHandler(true, "")
