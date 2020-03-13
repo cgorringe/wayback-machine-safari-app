@@ -65,6 +65,18 @@ class WMELoginVC: WMEBaseVC {
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Actions
 
+    @IBAction func emailEnterPressed(_ sender: NSTextField) {
+        if txtEmail.stringValue.isEmpty == false {
+            self.view.window?.makeFirstResponder(txtPassword)
+        }
+    }
+
+    @IBAction func passwordEnterPressed(_ sender: NSTextField) {
+        if txtPassword.stringValue.isEmpty == false {
+            loginClicked(sender)
+        }
+    }
+
     @IBAction func loginClicked(_ sender: Any) {
 
         let email = txtEmail.stringValue
