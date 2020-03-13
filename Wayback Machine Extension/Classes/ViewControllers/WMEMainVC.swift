@@ -160,7 +160,12 @@ class WMEMainVC: WMEBaseVC {
             self.txtLastSaved.stringValue = ""
             return
         }
-        self.updateSavedInfo(wbc: WMEGlobal.shared.urlCountCache[url])
+        if url == "PRIVATE" {
+            self.txtSavedInfo.stringValue = "Private Browsing Enabled."
+            self.txtLastSaved.stringValue = "Enter website below for stats."
+        } else {
+            self.updateSavedInfo(wbc: WMEGlobal.shared.urlCountCache[url])
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

@@ -77,7 +77,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         window.getActiveTab() { (activeTab) in
             activeTab?.getActivePage() { (activePage) in
                 activePage?.getPropertiesWithCompletionHandler() { (properties) in
-                    if let url = properties?.url?.absoluteString {
+                    if let url = properties?.url?.absoluteString, properties?.usesPrivateBrowsing == false {
+                        // non-private browsing with URL present
                         if let wbc = WMEGlobal.shared.urlCountCache[url] {
                             // url in cache
                             WMEGlobal.shared.urlCountLastURL = url
@@ -102,7 +103,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                             }
                         }
                     } else {
-                        WMEGlobal.shared.urlCountLastURL = nil
+                        WMEGlobal.shared.urlCountLastURL = (properties?.usesPrivateBrowsing == true) ? "PRIVATE" : nil
                         validationHandler(true, "")
                     }
                 }
