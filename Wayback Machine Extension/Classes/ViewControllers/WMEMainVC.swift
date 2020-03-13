@@ -24,6 +24,8 @@ class WMEMainVC: WMEBaseVC {
     @IBOutlet weak var btnSiteMap: NSButton!
     @IBOutlet weak var btnLoginout: NSButton!
 
+    var waybackCountPending: Bool = false
+
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - View Lifecycle
 
@@ -168,8 +170,38 @@ class WMEMainVC: WMEBaseVC {
         }
     }
 
+    func fetchAndShowSavedInfo(url: String) {
+        if self.waybackCountPending == false {
+            self.waybackCountPending = true
+            WMSAPIManager.shared.getWaybackCount(url: url) { (originalURL, count, firstDate, lastDate) in
+                self.waybackCountPending = false
+                if let count = count {
+                    let wbc = WMWaybackCount(count: count, firstDate: firstDate, lastDate: lastDate)
+                    self.updateSavedInfo(wbc: wbc)
+                } else {
+                    self.updateSavedInfo(wbc: nil)
+                }
+            }
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Actions
+
+    @IBAction func searchEnterPressed(_ sender: NSSearchField) {
+        if (DEBUG_LOG) { NSLog("*** searchEnterPressed() sender: \(sender)") }
+        if sender === self.txtSearch! {
+            // take user-entered web address and fetch Wayback info
+            let text = self.txtSearch.stringValue
+            if (DEBUG_LOG) { NSLog("*** txtSearch: \(text)") }
+            let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty, let url = encodeWhitespace(trimmed) {
+                fetchAndShowSavedInfo(url: url)
+            } else {
+                updateSavedInfo(wbc: nil)
+            }
+        }
+    }
 
     @IBAction func savePageNowClicked(_ sender: Any) {
 
@@ -459,6 +491,7 @@ class WMEMainVC: WMEBaseVC {
 extension WMEMainVC: NSSearchFieldDelegate {
 
     func controlTextDidEndEditing(_ obj: Notification) {
+        //if (DEBUG_LOG) { NSLog("*** controlTextDidEndEditing() obj: \(obj)") }
         saveSearchField(text: txtSearch.stringValue)
     }
 

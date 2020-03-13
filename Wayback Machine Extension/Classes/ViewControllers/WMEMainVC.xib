@@ -41,11 +41,14 @@
                                 </imageView>
                                 <searchField wantsLayer="YES" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ThK-OG-A4k">
                                     <rect key="frame" x="15" y="460" width="220" height="22"/>
-                                    <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Enter website URL" usesSingleLineMode="YES" bezelStyle="round" id="9zS-SW-Q7i">
+                                    <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Enter website URL" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="9zS-SW-Q7i">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </searchFieldCell>
+                                    <connections>
+                                        <action selector="searchEnterPressed:" target="-2" id="2Mc-4W-esg"/>
+                                    </connections>
                                 </searchField>
                                 <box focusRingType="none" title="Wayback" translatesAutoresizingMaskIntoConstraints="NO" id="vrw-Nd-LRN">
                                     <rect key="frame" x="12" y="300" width="226" height="152"/>
