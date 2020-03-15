@@ -8,7 +8,7 @@ var IAExtension = function () {
 
     me.init = function () {
         window.addEventListener("DOMContentLoaded", function(event) {
-            safari.extension.dispatchMessage("Hello World!");
+            //safari.extension.dispatchMessage("Hello World!");
             safari.self.addEventListener("message", me.handleMessage);
         });
 
@@ -23,6 +23,14 @@ var IAExtension = function () {
 
         window.addEventListener("beforeunload", function(event) {
             safari.extension.dispatchMessage("_onBeforeNavigate");
+        });
+
+        window.addEventListener("contextmenu", function(e) {
+            if (e.target && e.target.nodeName == "A") {
+                safari.extension.setContextMenuEventUserInfo(e, { "contextLink": e.target.href });
+            } else {
+                safari.extension.setContextMenuEventUserInfo(e, { "contextLink": null });
+            }
         });
     };
 

@@ -66,6 +66,15 @@
 			<key>Label</key>
 			<string>Wayback Machine</string>
 		</dict>
+		<key>SFSafariContextMenu</key>
+		<array>
+			<dict>
+				<key>Text</key>
+				<string>Open in Wayback Machine</string>
+				<key>Command</key>
+				<string>open</string>
+			</dict>
+		</array>
 		<key>SFSafariWebsiteAccess</key>
 		<dict>
 			<key>Level</key>

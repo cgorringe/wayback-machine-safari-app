@@ -12,6 +12,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     var waybackCountPending: Bool = false
 
+    ///////////////////////////////////////////////////////////////////////////////////
+    // MARK: - Message handlers
+
     // This method will be called when a content script provided by your extension calls safari.extension.dispatchMessage("message").
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String : Any]?) {
         if (DEBUG_LOG) { NSLog("*** messageReceived(): %@", messageName) }
@@ -39,7 +42,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             handleBeforeNavigate()
         }
     }
-    
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // MARK: - Toolbar handlers
+
     // This method will be called when your toolbar item is clicked.
     override func toolbarItemClicked(in window: SFSafariWindow) {
         if (DEBUG_LOG) { NSLog("*** The extension's toolbar item was clicked") }
@@ -115,7 +121,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         let vc = WMEMainVC()
         return vc
     }
-    
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // MARK: - Checking 404
+
     func handleBeforeNavigate() {
         if (DEBUG_LOG) { NSLog("*** handleBeforeNavigate()") }
         WMEUtil.shared.getActivePageURL { (url) in
@@ -159,6 +168,42 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             completion(httpStatus?.statusCode)
         }
         task.resume()
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // MARK: - Context Menu
+
+    override func contextMenuItemSelected(withCommand command: String, in page: SFSafariPage,
+                                          userInfo: [String : Any]? = nil) {
+        if (DEBUG_LOG) { NSLog("*** contextMenuItemSelected: \(command)") }
+        if command == "open" {
+            if let contextLink = userInfo?["contextLink"] as? String {
+                // open link in wayback machine
+                let fullURL = WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_OVERVIEW + contextLink
+                WMEUtil.shared.openTabWithURL(url: fullURL)
+
+            } else {
+                // open page in wayback machine
+                page.getPropertiesWithCompletionHandler({ (properties) in
+                    if let url = properties?.url?.absoluteString {
+                        let fullURL = WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_OVERVIEW + url
+                        WMEUtil.shared.openTabWithURL(url: fullURL)
+                    }
+                })
+            }
+        }
+    }
+
+    override func validateContextMenuItem(withCommand command: String, in page: SFSafariPage,
+                                          userInfo: [String : Any]? = nil,
+                                          validationHandler: @escaping (Bool, String?) -> Void) {
+        if command == "open" {
+            if userInfo?["contextLink"] as? String != nil {
+                validationHandler(false, "🏛 Open Link in Wayback Machine")
+            } else {
+                validationHandler(false, "🏛 Open Page in Wayback Machine")
+            }
+        }
     }
 
 }
