@@ -17,22 +17,39 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="Hz6-mo-xeY">
-            <rect key="frame" x="0.0" y="0.0" width="250" height="610"/>
+            <rect key="frame" x="0.0" y="0.0" width="250" height="630"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <visualEffectView wantsLayer="YES" appearanceType="inheritedVibrantLight" blendingMode="withinWindow" material="underWindowBackground" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="1ZO-gQ-CKe">
-                    <rect key="frame" x="0.0" y="0.0" width="250" height="610"/>
+                    <rect key="frame" x="0.0" y="0.0" width="250" height="630"/>
                 </visualEffectView>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Yxq-jJ-2NE">
-                    <rect key="frame" x="5" y="525" width="240" height="80"/>
+                    <rect key="frame" x="5" y="545" width="240" height="80"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="Yxq-jJ-2NE" secondAttribute="height" multiplier="12:4" id="4vZ-DX-Sg2"/>
                         <constraint firstAttribute="width" constant="240" id="boJ-g3-X3d"/>
                     </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" image="wayback-logo" id="m9f-yW-15D"/>
                 </imageView>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="itb-SH-sBX">
+                    <rect key="frame" x="95" y="455" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="itb-SH-sBX" secondAttribute="height" multiplier="1:1" id="Q88-ww-ucW"/>
+                        <constraint firstAttribute="width" constant="60" id="hYW-8L-ZXS"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="archive-logo" id="iEd-Oh-wWG"/>
+                    <color key="contentTintColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                </imageView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dn8-z9-cdk">
+                    <rect key="frame" x="18" y="416" width="214" height="19"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Login to the Internet Archive" id="m8w-DF-cqb">
+                        <font key="font" metaFont="system" size="16"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
                 <textField focusRingType="exterior" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZSf-24-bOS">
-                    <rect key="frame" x="30" y="325" width="190" height="30"/>
+                    <rect key="frame" x="30" y="345" width="190" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="tEg-Pu-RSM"/>
                     </constraints>
@@ -46,7 +63,7 @@
                     </connections>
                 </textField>
                 <secureTextField focusRingType="exterior" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Unj-gS-T29">
-                    <rect key="frame" x="30" y="285" width="190" height="30"/>
+                    <rect key="frame" x="30" y="305" width="190" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="VHf-zJ-9CB"/>
                     </constraints>
@@ -63,7 +80,7 @@
                     </connections>
                 </secureTextField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9Kn-HO-LeY">
-                    <rect key="frame" x="30" y="225" width="190" height="30"/>
+                    <rect key="frame" x="30" y="245" width="190" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="e6F-r9-GeD"/>
                     </constraints>
@@ -91,7 +108,7 @@
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bGM-gB-50H">
-                    <rect key="frame" x="30" y="185" width="190" height="30"/>
+                    <rect key="frame" x="30" y="205" width="190" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="j4Q-ji-B7W"/>
                     </constraints>
@@ -119,7 +136,7 @@
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YBt-7F-SxZ">
-                    <rect key="frame" x="30" y="145" width="190" height="30"/>
+                    <rect key="frame" x="30" y="165" width="190" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="X5Q-by-vdc"/>
                     </constraints>
@@ -174,23 +191,6 @@
                         <action selector="aboutClicked:" target="-2" id="bi0-03-8lu"/>
                     </connections>
                 </button>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="itb-SH-sBX">
-                    <rect key="frame" x="95" y="435" width="60" height="60"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="itb-SH-sBX" secondAttribute="height" multiplier="1:1" id="Q88-ww-ucW"/>
-                        <constraint firstAttribute="width" constant="60" id="hYW-8L-ZXS"/>
-                    </constraints>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="archive-logo" id="iEd-Oh-wWG"/>
-                    <color key="contentTintColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                </imageView>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dn8-z9-cdk">
-                    <rect key="frame" x="18" y="396" width="214" height="19"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Login to the Internet Archive" id="m8w-DF-cqb">
-                        <font key="font" metaFont="system" size="16"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
             </subviews>
             <constraints>
                 <constraint firstItem="9Kn-HO-LeY" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="30" id="1hd-t7-t7V"/>
@@ -223,7 +223,7 @@
                 <constraint firstItem="Unj-gS-T29" firstAttribute="top" secondItem="ZSf-24-bOS" secondAttribute="bottom" constant="10" id="rI4-q9-j4I"/>
                 <constraint firstAttribute="trailing" secondItem="4Nv-ge-RcT" secondAttribute="trailing" constant="30" id="ryC-um-WdG"/>
                 <constraint firstItem="itb-SH-sBX" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="sPf-be-wIy"/>
-                <constraint firstItem="4Nv-ge-RcT" firstAttribute="top" secondItem="YBt-7F-SxZ" secondAttribute="bottom" constant="95" id="t9y-aA-rKk"/>
+                <constraint firstItem="4Nv-ge-RcT" firstAttribute="top" secondItem="YBt-7F-SxZ" secondAttribute="bottom" constant="115" id="t9y-aA-rKk"/>
                 <constraint firstItem="YBt-7F-SxZ" firstAttribute="top" secondItem="bGM-gB-50H" secondAttribute="bottom" constant="10" id="wd0-xV-kuF"/>
             </constraints>
             <point key="canvasLocation" x="141" y="154"/>

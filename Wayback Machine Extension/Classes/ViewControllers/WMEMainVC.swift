@@ -21,6 +21,9 @@ class WMEMainVC: WMEBaseVC {
     @IBOutlet weak var txtLastSaved: NSTextField!
     @IBOutlet weak var indProgress: NSProgressIndicator!
     @IBOutlet weak var btnSavePage: NSButton!
+    @IBOutlet weak var txtSaveLabel: NSTextField!
+    @IBOutlet weak var chkSaveOutlinks: NSButton!
+    @IBOutlet weak var chkSaveScreenshots: NSButton!
     @IBOutlet weak var btnSiteMap: NSButton!
     @IBOutlet weak var btnLoginout: NSButton!
 
@@ -66,11 +69,19 @@ class WMEMainVC: WMEBaseVC {
             btnSavePage.isEnabled = true
             btnSavePage.title = "Save Page Now"
             btnLoginout.title = "Logout"
+            txtSaveLabel.textColor = NSColor.labelColor
+            chkSaveOutlinks.isEnabled = true
+            chkSaveScreenshots.isEnabled = true
         } else {
             boxWayback.title = "Wayback (logged out)"
             btnSavePage.isEnabled = false
             btnSavePage.title = "Login to Save Page"
             btnLoginout.title = "Login"
+            txtSaveLabel.textColor = NSColor.disabledControlTextColor
+            chkSaveOutlinks.state = .off
+            chkSaveOutlinks.isEnabled = false
+            chkSaveScreenshots.state = .off
+            chkSaveScreenshots.isEnabled = false
         }
     }
 
@@ -205,6 +216,18 @@ class WMEMainVC: WMEBaseVC {
 
     @IBAction func savePageNowClicked(_ sender: Any) {
 
+        var options: WMSAPIManager.CaptureOptions = [.allErrors]
+        if chkSaveOutlinks.state == .on {
+            options.append(.outlinks)
+        }
+        if chkSaveScreenshots.state == .on {
+            options.append(.screenshot)
+        }
+        savePageNow(options: options)
+    }
+
+    func savePageNow(options: WMSAPIManager.CaptureOptions) {
+
         enableSavePageUI(false)
         grabURL { (url) in
             guard let url = url else {
@@ -221,7 +244,7 @@ class WMEMainVC: WMEBaseVC {
                 return
             }
 
-            WMSAPIManager.shared.capturePage(url: url, accessKey: accessKey, secretKey: secretKey, options:[.allErrors]) {
+            WMSAPIManager.shared.capturePage(url: url, accessKey: accessKey, secretKey: secretKey, options: options) {
                 (jobId) in
 
                 if let jobId = jobId {
