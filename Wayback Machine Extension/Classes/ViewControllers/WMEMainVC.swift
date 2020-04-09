@@ -176,6 +176,9 @@ class WMEMainVC: WMEBaseVC {
         if url == "PRIVATE" {
             self.txtSavedInfo.stringValue = "Private Browsing Enabled."
             self.txtLastSaved.stringValue = "Enter website below for stats."
+        } else if url == "SEARCHING" {
+            self.txtSavedInfo.stringValue = ""
+            self.txtLastSaved.stringValue = "Searching..."
         } else {
             self.updateSavedInfo(wbc: WMEGlobal.shared.urlCountCache[url])
         }
@@ -184,6 +187,7 @@ class WMEMainVC: WMEBaseVC {
     func fetchAndShowSavedInfo(url: String) {
         if self.waybackCountPending == false {
             self.waybackCountPending = true
+            self.updateSavedInfo(url: "SEARCHING")
             WMSAPIManager.shared.getWaybackCount(url: url) { (originalURL, count, firstDate, lastDate) in
                 self.waybackCountPending = false
                 if let count = count {

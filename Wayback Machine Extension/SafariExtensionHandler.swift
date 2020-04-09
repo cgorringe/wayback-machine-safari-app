@@ -94,6 +94,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                         else if self.waybackCountPending == false {
                             // url not in cache, so call api
                             self.waybackCountPending = true
+                            WMEGlobal.shared.urlCountLastURL = "SEARCHING"
                             WMSAPIManager.shared.getWaybackCount(url: url) { (originalURL, count, firstDate, lastDate) in
                                 self.waybackCountPending = false
                                 if (DEBUG_LOG) { NSLog("*** showWaybackCount() completion count: \(String(describing: count)), url: \(originalURL)") }
