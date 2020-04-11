@@ -249,7 +249,7 @@ class WMEMainVC: WMEBaseVC {
             }
 
             WMSAPIManager.shared.capturePage(url: url, accessKey: accessKey, secretKey: secretKey, options: options) {
-                (jobId) in
+                (jobId, error) in
 
                 if let jobId = jobId {
                     // short delay before retrieving status
@@ -263,17 +263,31 @@ class WMEMainVC: WMEBaseVC {
                             self.btnSavePage.title = "Saving... \(resCount)"
                         },
                         completion: {
-                            (archiveURL, errMsg) in
+                            (archiveURL, errMsg, json) in
 
                             if (DEBUG_LOG) { NSLog("*** capturePage completed: archiveURL: \(String(describing: archiveURL)) errMsg: \(String(describing: errMsg))") }
                             self.enableSavePageUI(true)
                             if archiveURL != nil {
+
                                 // increment counter, since there is a delay when calling API in receiving updated count
                                 if WMEGlobal.shared.urlCountCache[url] != nil {
                                     WMEGlobal.shared.urlCountCache[url]?.count += 1
                                     WMEGlobal.shared.urlCountCache[url]?.lastDate = Date()
                                     SFSafariApplication.setToolbarItemsNeedUpdate()
                                 }
+
+                                // report resource and outlink counts
+                                var infoMsg: String = "The following website has been archived:\n\(url)\n\n"
+                                if let resources = json?["resources"] as? [String] {
+                                    infoMsg += "\(resources.count) Resources saved.\n"
+                                }
+                                if let outlinks = json?["outlinks"] as? [String: Any] {
+                                    infoMsg += "\(outlinks.count) Outlinks saving in progress.\n"
+                                }
+                                if (json?["screenshot"] as? String) != nil {
+                                    infoMsg += "Screenshot saved.\n"
+                                }
+
                                 /*
                                  FIXME: NSAlert fails to show if MainVC not visible.
                                  I haven't been able to solve this issue.
@@ -305,7 +319,7 @@ class WMEMainVC: WMEBaseVC {
                                 }
                                 */
                                 // using this alert since prior code won't work due to Safari bug.
-                                WMEUtil.shared.showMessage(msg: "Page Saved", info: "The following website has been archived:\n\(url)")
+                                WMEUtil.shared.showMessage(msg: "Page Saved", info: infoMsg)
                             } else {
                                 WMEUtil.shared.showMessage(msg: "Save Page Failed", info: (errMsg ?? "Unknown Error"))
                             }
@@ -313,7 +327,7 @@ class WMEMainVC: WMEBaseVC {
                     }
                 } else {
                     self.enableSavePageUI(true)
-                    WMEUtil.shared.showMessage(msg: "Save Page Failed", info: "Please check that you're online.")
+                    WMEUtil.shared.showMessage(msg: "Save Page Failed", info: (error?.localizedDescription ?? "Unknown Error"))
                 }
             }
         }

@@ -388,7 +388,7 @@ class WMSAPIManager {
                      loggedInUser: String? = nil, loggedInSig: String? = nil,
                      accessKey: String? = nil, secretKey: String? = nil,
                      options: CaptureOptions = [],
-                     completion: @escaping (_ jobId: String?) -> Void)
+                     completion: @escaping (_ jobId: String?, _ error: Error?) -> Void)
     {
         // prepare cookies
         if let loggedInUser = loggedInUser, let loggedInSig = loggedInSig {
@@ -416,13 +416,13 @@ class WMSAPIManager {
             case .success:
                 if let json = response.result.value as? [String: Any],
                     let job_id = json["job_id"] as? String {
-                    completion(job_id)
+                    completion(job_id, nil)
                 } else {
-                    completion(nil)
+                    completion(nil, nil)
                 }
             case .failure(let error):
                 NSLog("*** ERROR: %@", error.localizedDescription)
-                completion(nil)
+                completion(nil, error)
             }
         }
     }
@@ -445,7 +445,7 @@ class WMSAPIManager {
                        accessKey: String? = nil, secretKey: String? = nil,
                        options: CaptureOptions = [],
                        pending: @escaping (_ resources: [String]?) -> Void = {_ in },
-                       completion: @escaping (_ archiveURL: String?, _ errMsg: String?) -> Void)
+                       completion: @escaping (_ archiveURL: String?, _ errMsg: String?, _ resultJSON: [String: Any]? ) -> Void)
     {
         if (DEBUG_LOG) { NSLog("*** getPageStatus()") }
 
@@ -488,25 +488,25 @@ class WMSAPIManager {
                         if let timestamp = json["timestamp"] as? String,
                             let originalUrl = json["original_url"] as? String {
                             let archiveUrl = WMSAPIManager.WM_BASE_URL + "/web/\(timestamp)/\(originalUrl)"
-                            completion(archiveUrl, nil)
+                            completion(archiveUrl, nil, json)
                         } else {
-                            completion(nil, "Unknown Status Error 1")
+                            completion(nil, "Unknown Status Error 1", json)
                         }
                     } else if status == "error" {
                         let message = json["message"] as? String ?? "Unknown Status Error 2"
-                        completion(nil, message)
+                        completion(nil, message, json)
                     } else {
-                        completion(nil, "Unknown Status Error 3 (\(status))")
+                        completion(nil, "Unknown Status Error 3 (\(status))", json)
                     }
                 } else {
-                    completion(nil, "Error serializing JSON: \(String(describing: response.result.value))")
+                    completion(nil, "Error serializing JSON: \(String(describing: response.result.value))", nil)
                 }
 
             case .failure(let error):
                 // Sometimes we get "The request timed out".
                 // This error really should be fixed on the server API end.
                 if (DEBUG_LOG) { NSLog("*** getPageStatus(): request failure: " + error.localizedDescription) }
-                completion(nil, error.localizedDescription)
+                completion(nil, error.localizedDescription, nil)
             }
         }
     }
