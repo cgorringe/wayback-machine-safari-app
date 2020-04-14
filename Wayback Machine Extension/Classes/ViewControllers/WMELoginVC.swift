@@ -65,6 +65,11 @@ class WMELoginVC: WMEBaseVC {
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Actions
 
+    /// Go to the Wayback Machine website.
+    @IBAction func waybackLogoClicked(_ sender: Any) {
+        WMEUtil.shared.openTabWithURL(url: "https://web.archive.org/")
+    }
+
     @IBAction func emailEnterPressed(_ sender: NSTextField) {
         if txtEmail.stringValue.isEmpty == false {
             self.view.window?.makeFirstResponder(txtPassword)

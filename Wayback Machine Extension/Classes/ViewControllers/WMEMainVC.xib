@@ -34,14 +34,20 @@
                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="Xb7-Q6-2Cv">
                             <rect key="frame" x="0.0" y="0.0" width="250" height="630"/>
                             <subviews>
-                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ThR-Gr-ONr">
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="dXh-SZ-Zp1">
                                     <rect key="frame" x="5" y="545" width="240" height="80"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="240" id="ITe-tv-Sac"/>
-                                        <constraint firstAttribute="width" secondItem="ThR-Gr-ONr" secondAttribute="height" multiplier="12:4" id="KRx-oU-jGr"/>
+                                        <constraint firstAttribute="width" secondItem="dXh-SZ-Zp1" secondAttribute="height" multiplier="3:1" id="Fqo-KE-PDm"/>
+                                        <constraint firstAttribute="width" constant="240" id="uUm-UE-f7Z"/>
                                     </constraints>
-                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" image="wayback-logo" id="GwZ-Ns-2wG"/>
-                                </imageView>
+                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="wayback-logo" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="nEZ-yi-nOz">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="waybackLogoClicked:" target="-2" id="TUS-g1-Zm4"/>
+                                    </connections>
+                                </button>
                                 <searchField wantsLayer="YES" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ThK-OG-A4k">
                                     <rect key="frame" x="15" y="480" width="220" height="22"/>
                                     <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Enter website URL" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="9zS-SW-Q7i">
@@ -542,20 +548,20 @@
                                 <constraint firstItem="bST-zi-SkE" firstAttribute="top" secondItem="KQU-c4-ESA" secondAttribute="bottom" constant="2" id="Opq-fS-YNS"/>
                                 <constraint firstItem="yyD-Jk-sKs" firstAttribute="leading" secondItem="Xb7-Q6-2Cv" secondAttribute="leading" constant="30" id="Rke-6k-AHG"/>
                                 <constraint firstAttribute="trailing" secondItem="bST-zi-SkE" secondAttribute="trailing" constant="15" id="UuX-Ex-0Wk"/>
-                                <constraint firstItem="ThR-Gr-ONr" firstAttribute="top" secondItem="Xb7-Q6-2Cv" secondAttribute="top" constant="5" id="Vbw-HT-7v0"/>
-                                <constraint firstItem="ThR-Gr-ONr" firstAttribute="leading" secondItem="Xb7-Q6-2Cv" secondAttribute="leading" constant="5" id="YNB-MN-2cl"/>
                                 <constraint firstAttribute="trailing" secondItem="vrw-Nd-LRN" secondAttribute="trailing" constant="15" id="YcL-Ub-MKN"/>
-                                <constraint firstAttribute="trailing" secondItem="ThR-Gr-ONr" secondAttribute="trailing" constant="5" id="Zue-vb-wzf"/>
+                                <constraint firstAttribute="trailing" secondItem="dXh-SZ-Zp1" secondAttribute="trailing" constant="5" id="bpD-db-vJJ"/>
                                 <constraint firstAttribute="trailing" secondItem="PmN-QP-WkG" secondAttribute="trailing" constant="15" id="cwv-K7-3jI"/>
                                 <constraint firstItem="vrw-Nd-LRN" firstAttribute="top" secondItem="ThK-OG-A4k" secondAttribute="bottom" constant="8" id="enO-qQ-TbU"/>
-                                <constraint firstItem="KQU-c4-ESA" firstAttribute="top" secondItem="ThR-Gr-ONr" secondAttribute="bottom" constant="5" id="fUa-Ht-P8k"/>
                                 <constraint firstItem="jd3-5u-juE" firstAttribute="leading" secondItem="Xb7-Q6-2Cv" secondAttribute="leading" constant="15" id="g3O-Fi-3b5"/>
                                 <constraint firstItem="PmN-QP-WkG" firstAttribute="top" secondItem="vrw-Nd-LRN" secondAttribute="bottom" constant="8" id="hqN-Kj-Hdm"/>
                                 <constraint firstItem="yyD-Jk-sKs" firstAttribute="top" secondItem="jd3-5u-juE" secondAttribute="bottom" constant="20" id="iVz-je-djx"/>
                                 <constraint firstAttribute="bottom" secondItem="ck1-dK-9nV" secondAttribute="bottom" constant="20" id="kfo-Wy-K0u"/>
                                 <constraint firstAttribute="trailing" secondItem="yyD-Jk-sKs" secondAttribute="trailing" constant="30" id="lhe-CM-JT1"/>
+                                <constraint firstItem="dXh-SZ-Zp1" firstAttribute="top" secondItem="Xb7-Q6-2Cv" secondAttribute="top" constant="5" id="n5f-jw-t4n"/>
+                                <constraint firstItem="KQU-c4-ESA" firstAttribute="top" secondItem="dXh-SZ-Zp1" secondAttribute="bottom" constant="5" id="nLr-oe-QA5"/>
                                 <constraint firstItem="jd3-5u-juE" firstAttribute="top" secondItem="PmN-QP-WkG" secondAttribute="bottom" constant="8" id="nut-f4-BwY"/>
                                 <constraint firstAttribute="trailing" secondItem="ThK-OG-A4k" secondAttribute="trailing" constant="15" id="shd-P1-NAM"/>
+                                <constraint firstItem="dXh-SZ-Zp1" firstAttribute="leading" secondItem="Xb7-Q6-2Cv" secondAttribute="leading" constant="5" id="xCU-Cb-7p2"/>
                                 <constraint firstItem="KQU-c4-ESA" firstAttribute="leading" secondItem="Xb7-Q6-2Cv" secondAttribute="leading" constant="15" id="zdE-Is-7Kf"/>
                             </constraints>
                         </customView>

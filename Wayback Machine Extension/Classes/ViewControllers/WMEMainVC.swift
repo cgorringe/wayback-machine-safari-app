@@ -203,6 +203,11 @@ class WMEMainVC: WMEBaseVC {
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Actions
 
+    /// Go to the Wayback Machine website.
+    @IBAction func waybackLogoClicked(_ sender: Any) {
+        WMEUtil.shared.openTabWithURL(url: "https://web.archive.org/")
+    }
+
     @IBAction func searchEnterPressed(_ sender: NSSearchField) {
         if (DEBUG_LOG) { NSLog("*** searchEnterPressed() sender: \(sender)") }
         if sender === self.txtSearch! {
