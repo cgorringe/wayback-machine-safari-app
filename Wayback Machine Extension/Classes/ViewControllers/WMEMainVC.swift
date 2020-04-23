@@ -228,6 +228,7 @@ class WMEMainVC: WMEBaseVC {
         var options: WMSAPIManager.CaptureOptions = [.allErrors]
         if chkSaveOutlinks.state == .on {
             options.append(.outlinks)
+            options.append(.emailOutlinks)
         }
         if chkSaveScreenshots.state == .on {
             options.append(.screenshot)

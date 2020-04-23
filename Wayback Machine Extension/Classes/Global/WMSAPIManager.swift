@@ -19,7 +19,7 @@ class WMSAPIManager {
 
     // options
     public enum CaptureOption {
-        case allErrors, outlinks, screenshot, availability
+        case allErrors, outlinks, screenshot, availability, emailOutlinks
     }
     public typealias CaptureOptions = [CaptureOption]
 
@@ -406,6 +406,7 @@ class WMSAPIManager {
         if options.contains(.allErrors)  { params["capture_all"] = "1" }  // page with errors (status=4xx or 5xx)
         if options.contains(.outlinks)   { params["capture_outlinks"] = "1" }  // web page outlinks
         if options.contains(.screenshot) { params["capture_screenshot"] = "1" }  // full page screenshot as PNG
+        if options.contains(.emailOutlinks) { params["email_result"] = "1" }
 
         // make request
         Alamofire.request(WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_SPN2_SAVE,
