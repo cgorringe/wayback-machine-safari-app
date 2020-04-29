@@ -21,7 +21,7 @@ class WMEMainVC: WMEBaseVC {
     @IBOutlet weak var txtLastSaved: NSTextField!
     @IBOutlet weak var indProgress: NSProgressIndicator!
     @IBOutlet weak var btnSavePage: NSButton!
-    @IBOutlet weak var txtSaveLabel: NSTextField!
+    //@IBOutlet weak var txtSaveLabel: NSTextField!
     @IBOutlet weak var chkSaveOutlinks: NSButton!
     @IBOutlet weak var chkSaveScreenshots: NSButton!
     @IBOutlet weak var btnSiteMap: NSButton!
@@ -69,7 +69,7 @@ class WMEMainVC: WMEBaseVC {
             btnSavePage.isEnabled = true
             btnSavePage.title = "Save Page Now"
             btnLoginout.title = "Logout"
-            txtSaveLabel.textColor = NSColor.labelColor
+            //txtSaveLabel.textColor = NSColor.labelColor
             chkSaveOutlinks.isEnabled = true
             chkSaveScreenshots.isEnabled = true
         } else {
@@ -77,7 +77,7 @@ class WMEMainVC: WMEBaseVC {
             btnSavePage.isEnabled = false
             btnSavePage.title = "Login to Save Page"
             btnLoginout.title = "Login"
-            txtSaveLabel.textColor = NSColor.disabledControlTextColor
+            //txtSaveLabel.textColor = NSColor.disabledControlTextColor
             chkSaveOutlinks.state = .off
             chkSaveOutlinks.isEnabled = false
             chkSaveScreenshots.state = .off
@@ -154,7 +154,7 @@ class WMEMainVC: WMEBaseVC {
                 let df = DateFormatter()
                 df.dateStyle = .medium
                 df.timeStyle = .short
-                self.txtLastSaved.stringValue = "Last Saved on " + df.string(from: recent)
+                self.txtLastSaved.stringValue = "Last Saved " + df.string(from: recent)
             } else {
                 self.txtLastSaved.stringValue = ""
             }
