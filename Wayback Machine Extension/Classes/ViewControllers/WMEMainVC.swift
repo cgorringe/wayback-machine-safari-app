@@ -88,12 +88,9 @@ class WMEMainVC: WMEBaseVC {
     func enableSavePageUI(_ enable:Bool) {
         if enable {
             btnSavePage.title = "Save Page Now"
-            btnSavePage.isEnabled = true
             indProgress.stopAnimation(nil)
-
         } else {
             btnSavePage.title = "Saving..."
-            btnSavePage.isEnabled = false
             indProgress.startAnimation(nil)
         }
         // save state in case view disappears
@@ -225,15 +222,17 @@ class WMEMainVC: WMEBaseVC {
 
     @IBAction func savePageNowClicked(_ sender: Any) {
 
-        var options: WMSAPIManager.CaptureOptions = [.allErrors]
-        if chkSaveOutlinks.state == .on {
-            options.append(.outlinks)
-            options.append(.emailOutlinks)
+        if WMEGlobal.shared.savePageEnabled {
+            var options: WMSAPIManager.CaptureOptions = [.allErrors]
+            if chkSaveOutlinks.state == .on {
+                options.append(.outlinks)
+                options.append(.emailOutlinks)
+            }
+            if chkSaveScreenshots.state == .on {
+                options.append(.screenshot)
+            }
+            savePageNow(options: options)
         }
-        if chkSaveScreenshots.state == .on {
-            options.append(.screenshot)
-        }
-        savePageNow(options: options)
     }
 
     func savePageNow(options: WMSAPIManager.CaptureOptions) {
