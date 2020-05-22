@@ -272,7 +272,7 @@ class WMEMainVC: WMEBaseVC {
 
                             if (DEBUG_LOG) { NSLog("*** capturePage completed: archiveURL: \(String(describing: archiveURL)) errMsg: \(String(describing: errMsg))") }
                             self.enableSavePageUI(true)
-                            if archiveURL != nil {
+                            if let archiveURL = archiveURL {
 
                                 // increment counter, since there is a delay when calling API in receiving updated count
                                 if WMEGlobal.shared.urlCountCache[url] != nil {
@@ -292,6 +292,7 @@ class WMEMainVC: WMEBaseVC {
                                 if (json?["screenshot"] as? String) != nil {
                                     infoMsg += "Screenshot saved.\n"
                                 }
+                                if (DEBUG_LOG) { NSLog("*** capturePage Saved: %@", infoMsg) }
 
                                 /*
                                  FIXME: NSAlert fails to show if MainVC not visible.
@@ -304,28 +305,29 @@ class WMEMainVC: WMEBaseVC {
                                  Only idea I came up with is to send a message to some injected JS that runs:
                                    if (window.confirm("message")) { window.open("url", "_blank "); }
                                 */
-                                /*
-                                // alert to ask to View Archive (keep)
-                                // FIXME: Doesn't open URL due to Safari bug. see openTabWithURL() in WMEUtil.
+
+                                // alert to view saved info
                                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                     let alert = NSAlert()
                                     alert.messageText = "Page Saved"
-                                    alert.informativeText = "The following website has been archived:\n\(url)"
+                                    alert.informativeText = infoMsg
                                     alert.alertStyle = .informational
                                     alert.addButton(withTitle: "OK")
-                                    alert.addButton(withTitle: "View Archive")
+                                    alert.addButton(withTitle: "Copy Wayback URL")
                                     let mr = alert.runModal()
                                     if mr == .alertSecondButtonReturn {
-                                        if (DEBUG_LOG) { NSLog("*** View Archive button clicked") }
+                                        // copy URL to clipboard (this works)
+                                        if (DEBUG_LOG) { NSLog("*** Copy URL button clicked: \(archiveURL)") }
+                                        NSPasteboard.general.clearContents()
+                                        NSPasteboard.general.setString(archiveURL, forType: .string)
+
+                                        // FIXME: Can't open URL due to Safari bug. see openTabWithURL() in WMEUtil.
+                                        //if (DEBUG_LOG) { NSLog("*** View Archive button clicked") }
                                         // Neither of these work:
                                         //WMEUtil.shared.openTabWithURL(url: archiveURL)
                                         //self.newestClicked(nil)
                                     }
                                 }
-                                */
-                                // using this alert since prior code won't work due to Safari bug.
-                                if (DEBUG_LOG) { NSLog("*** capturePage Saved: %@", infoMsg) }
-                                WMEUtil.shared.showMessage(msg: "Page Saved", info: infoMsg)
                             } else {
                                 if (DEBUG_LOG) { NSLog("*** capturePage Failed1: %@", (errMsg ?? "Unknown Error")) }
                                 WMEUtil.shared.showMessage(msg: "Save Page Failed", info: (errMsg ?? "Unknown Error"))
