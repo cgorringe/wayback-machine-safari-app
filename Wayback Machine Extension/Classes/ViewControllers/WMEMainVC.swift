@@ -324,14 +324,17 @@ class WMEMainVC: WMEBaseVC {
                                 }
                                 */
                                 // using this alert since prior code won't work due to Safari bug.
+                                if (DEBUG_LOG) { NSLog("*** capturePage Saved: %@", infoMsg) }
                                 WMEUtil.shared.showMessage(msg: "Page Saved", info: infoMsg)
                             } else {
+                                if (DEBUG_LOG) { NSLog("*** capturePage Failed1: %@", (errMsg ?? "Unknown Error")) }
                                 WMEUtil.shared.showMessage(msg: "Save Page Failed", info: (errMsg ?? "Unknown Error"))
                             }
                         })
                     }
                 } else {
                     self.enableSavePageUI(true)
+                    if (DEBUG_LOG) { NSLog("*** capturePage Failed2: %@", (error?.localizedDescription ?? "Unknown Error")) }
                     WMEUtil.shared.showMessage(msg: "Save Page Failed", info: (error?.localizedDescription ?? "Unknown Error"))
                 }
             }

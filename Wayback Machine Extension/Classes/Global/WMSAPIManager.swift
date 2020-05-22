@@ -26,27 +26,39 @@ class WMSAPIManager {
     // MARK: - API Constants
 
     // keep base URLs as vars to support testing
+    #if os(macOS)
+    static var API_BASE_URL        = "https://web.archive.org"
+    // static var API_BASE_URL        = "https://safari-api.archive.org"
+    #elseif os(iOS)
+    #elseif os(tvOS)
+    #endif
+    static let API_SPN2_SAVE       = "/save/"
+    static let API_SPN2_STATUS     = "/save/status/"
+    static let API_SPARKLINE       = "/__wb/sparkline"
+    static let IA_AVAILABILITY    = "/wayback/available"
+    static let API_CDX_SEARCH      = "/cdx/search/cdx"
+
     static var WM_BASE_URL         = "https://web.archive.org"
-    static let WM_SPN2_SAVE        = "/save/"
-    static let WM_SPN2_STATUS      = "/save/status/"
     static let WM_OLDEST           = "/web/0/"
     static let WM_NEWEST           = "/web/2/"
     static let WM_OVERVIEW         = "/web/*/"
-    static let WM_SPARKLINE        = "/__wb/sparkline"
 
-    static var WEB_BASE_URL        = "https://archive.org"
-    static let WEB_AVAILABILITY    = "/wayback/available"
-    static let WEB_LOGIN           = "/account/login"
-    static let WEB_S3KEYS          = "/account/s3.php?output_json=1"
+    static var IA_BASE_URL        = "https://archive.org"
+    static let IA_LOGIN           = "/account/login"
+    static let IA_S3KEYS          = "/account/s3.php?output_json=1"
 
     static var UPLOAD_BASE_URL     = "https://s3.us.archive.org"
 
     /// update headers to reflect different apps
+    #if os(macOS)
     static let HEADERS: HTTPHeaders = [
         "User-Agent": "Wayback_Machine_Safari_XC/\(APP_VERSION)",
         "Wayback-Extension-Version": "Wayback_Machine_Safari_XC/\(APP_VERSION)",
         "Wayback-Api-Version": "2"
     ]
+    #elseif os(iOS)
+    #elseif os(tvOS)
+    #endif
 
     ///////////////////////////////////////////////////////////////////////////////////
     // MARK: - Helper Functions
@@ -158,7 +170,7 @@ class WMSAPIManager {
         params["action"] = "login"
 
         // make login request
-        Alamofire.request(WMSAPIManager.WEB_BASE_URL + WMSAPIManager.WEB_LOGIN,
+        Alamofire.request(WMSAPIManager.IA_BASE_URL + WMSAPIManager.IA_LOGIN,
                           method: .post, parameters: params, headers: headers)
         .responseString { (response) in
 
@@ -188,7 +200,7 @@ class WMSAPIManager {
         setArchiveCookie(name: "logged-in-sig", value: loggedInSig)
 
         // make request
-        Alamofire.request(WMSAPIManager.WEB_BASE_URL + WMSAPIManager.WEB_S3KEYS,
+        Alamofire.request(WMSAPIManager.IA_BASE_URL + WMSAPIManager.IA_S3KEYS,
                           method: .get, parameters: nil, headers: WMSAPIManager.HEADERS)
         .responseJSON { (response) in
 
@@ -229,7 +241,7 @@ class WMSAPIManager {
 
         // prepare request
         let requestParams = "url=\(url)"
-        var request = URLRequest(url: URL(string: WMSAPIManager.WEB_BASE_URL + WMSAPIManager.WEB_AVAILABILITY)!)
+        var request = URLRequest(url: URL(string: WMSAPIManager.IA_BASE_URL + WMSAPIManager.IA_AVAILABILITY)!)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-type")
         for (key, value) in WMSAPIManager.HEADERS {
@@ -298,7 +310,7 @@ class WMSAPIManager {
 
         // make request
         // http://web.archive.org/__wb/sparkline?url=URL&collection=web&output=json
-        Alamofire.request(WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_SPARKLINE,
+        Alamofire.request(WMSAPIManager.API_BASE_URL + WMSAPIManager.API_SPARKLINE,
                           method: .get, parameters: params, headers: headers)
         .responseJSON { (response) in
             switch response.result {
@@ -342,7 +354,7 @@ class WMSAPIManager {
     func getSiteMapData(url: String, completion: @escaping (_ data: [Any]?) -> Void) {
 
         // TODO: need to check/encode url?
-        let apiURL = "https://web.archive.org/cdx/search/cdx?url=\(url)/&fl=timestamp,original&matchType=prefix&filter=statuscode:200&filter=mimetype:text/html&output=json"
+        let apiURL = WMSAPIManager.API_BASE_URL + WMSAPIManager.API_CDX_SEARCH + "?url=\(url)/&fl=timestamp,original&matchType=prefix&filter=statuscode:200&filter=mimetype:text/html&output=json"
 
         /* TODO: later
         // prepare request
@@ -409,7 +421,7 @@ class WMSAPIManager {
         if options.contains(.emailOutlinks) { params["email_result"] = "1" }
 
         // make request
-        Alamofire.request(WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_SPN2_SAVE,
+        Alamofire.request(WMSAPIManager.API_BASE_URL + WMSAPIManager.API_SPN2_SAVE,
                           method: .post, parameters: params, headers: headers)
         .responseJSON { (response) in
 
@@ -468,7 +480,7 @@ class WMSAPIManager {
         // TODO: return custom Error objects?
 
         // make request
-        Alamofire.request(WMSAPIManager.WM_BASE_URL + WMSAPIManager.WM_SPN2_STATUS,
+        Alamofire.request(WMSAPIManager.API_BASE_URL + WMSAPIManager.API_SPN2_STATUS,
                           method: .post, parameters: params, headers: headers)
         .responseJSON { (response) in
             switch response.result {
