@@ -27,15 +27,14 @@ class WMSAPIManager {
 
     // keep base URLs as vars to support testing
     #if os(macOS)
-    static var API_BASE_URL        = "https://web.archive.org"
-    // static var API_BASE_URL        = "https://safari-api.archive.org"
+    static var API_BASE_URL        = "https://safari-api.archive.org"
     #elseif os(iOS)
     #elseif os(tvOS)
     #endif
     static let API_SPN2_SAVE       = "/save/"
     static let API_SPN2_STATUS     = "/save/status/"
     static let API_SPARKLINE       = "/__wb/sparkline"
-    static let IA_AVAILABILITY    = "/wayback/available"
+    static let API_AVAILABILITY    = "/wayback/available"
     static let API_CDX_SEARCH      = "/cdx/search/cdx"
 
     static var WM_BASE_URL         = "https://web.archive.org"
@@ -241,7 +240,7 @@ class WMSAPIManager {
 
         // prepare request
         let requestParams = "url=\(url)"
-        var request = URLRequest(url: URL(string: WMSAPIManager.IA_BASE_URL + WMSAPIManager.IA_AVAILABILITY)!)
+        var request = URLRequest(url: URL(string: WMSAPIManager.API_BASE_URL + WMSAPIManager.API_AVAILABILITY)!)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-type")
         for (key, value) in WMSAPIManager.HEADERS {
