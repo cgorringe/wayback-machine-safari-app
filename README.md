@@ -1,9 +1,10 @@
-## Wayback Machine Safari Extension ##
+## Wayback Machine Safari Extension (Deprecated) ##
 
 By [Internet Archive](https://archive.org)
 
-The Internet Archive presents 
-The Official WayBack Machine Extension. With the power of the WayBack Machine, we let you go back in time to see how a website has changed and evolved through the history of the Web!
+The Internet Archive presents *The Official WayBack Machine Extension*. With the power of the WayBack Machine, we let you go back in time to see how a website has changed and evolved through the history of the Web!
+
+> This is the outdated *Safari Native Swift* 1.4.x version of the extension. The latest *web-based* 3.x+ version is at [Wayback Machine Web Browser Extension](https://github.com/internetarchive/wayback-machine-webextension).
 
 ![screenshot](screenshots/main-light-75p.png)
 
